@@ -5,7 +5,7 @@ import Link from "next/link";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Button from "@/components/ui/Button";
 import Image from "@/components/common/Image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 export interface BlogSectionPost {
   title: string;
@@ -35,6 +35,13 @@ const item = {
 
 export default function BlogSection({ posts = defaultPosts }: { posts?: BlogSectionPost[] }) {
   const t = useTranslations("home");
+  const locale = useLocale();
+  const withLocale = (path: string) => {
+    if (!path.startsWith("/")) return path;
+    if (path === "/") return `/${locale}`;
+    if (path.startsWith(`/${locale}/`) || path === `/${locale}`) return path;
+    return `/${locale}${path}`;
+  };
 
   return (
     <section className="bg-white py-20 lg:py-[120px]">
@@ -68,7 +75,7 @@ export default function BlogSection({ posts = defaultPosts }: { posts?: BlogSect
               </div>
               <div className="p-6 flex flex-col gap-2">
                 <span className="text-xs text-muted-foreground">{post.date}</span>
-                <Link href={post.slug ? `/blog/${post.slug}` : "/blog"} className="group">
+                <Link href={post.slug ? withLocale(`/blog/${post.slug}`) : withLocale("/blog")} className="group">
                   <h3 className="font-display text-xl text-foreground group-hover:text-primary transition-colors">
                     {post.title}
                   </h3>

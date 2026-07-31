@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import { ReactNode } from "react";
 
 const MotionLink = motion(Link);
@@ -25,6 +26,7 @@ export default function Button({
   className,
   type = "button",
 }: ButtonProps) {
+  const locale = useLocale();
   const baseStyles =
     "inline-flex items-center justify-center rounded-full px-7 py-3.5 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2";
 
@@ -38,10 +40,18 @@ export default function Button({
 
   const classes = cn(baseStyles, variants[variant], className);
 
+  const resolvedHref = (() => {
+    if (!href) return href;
+    if (!href.startsWith("/")) return href;
+    if (href === "/") return `/${locale}`;
+    if (href.startsWith(`/${locale}/`) || href === `/${locale}`) return href;
+    return `/${locale}${href}`;
+  })();
+
   if (href) {
     return (
       <MotionLink
-        href={href}
+        href={resolvedHref}
         className={classes}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}

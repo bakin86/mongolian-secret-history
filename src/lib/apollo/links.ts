@@ -2,9 +2,10 @@ import { ApolloLink, HttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 
 const httpLink = new HttpLink({
-  uri: process.env.NEXT_PUBLIC_ERXES_ENDPOINT ?? process.env.NEXT_PUBLIC_GRAPHQL_URL ?? "/graphql",
+  uri: process.env.NEXT_PUBLIC_ERXES_API_URL,
   headers: {
-    "x-app-token": process.env.NEXT_PUBLIC_ERXES_APP_TOKEN ?? "",
+    "erxes-app-token": process.env.NEXT_PUBLIC_ERXES_APP_TOKEN ?? "",
+    "x-app-token": process.env.NEXT_PUBLIC_ERXES_CLIENT_PORTAL_TOKEN ?? "",
   },
 });
 

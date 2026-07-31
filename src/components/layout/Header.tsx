@@ -8,7 +8,6 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import Button from "@/components/ui/Button";
-import Image from "@/components/common/Image";
 import Logo from "@/components/common/Logo";
 import ThemeToggle from "@/components/common/ThemeToggle";
 
@@ -82,6 +81,7 @@ export default function Header({ menuItems }: { menuItems?: NavItem[] }) {
           >
             <Search size={20} />
           </Link>
+
           <div className="relative">
             <button
               onClick={() => setLangOpen(!langOpen)}
@@ -91,24 +91,26 @@ export default function Header({ menuItems }: { menuItems?: NavItem[] }) {
               <Globe size={16} />
               {currentLang.label} ▾
             </button>
+
             {langOpen && (
               <div className="absolute right-0 top-full mt-2 w-28 rounded-xl bg-white border border-border shadow-lg py-2">
                 {languages.map((lang) => (
-                    <Link
-                      key={lang.code}
-                      href={`/${lang.code}${pathWithoutLocale}`}
-                      className={cn(
-                        "block px-4 py-2 text-sm hover:bg-muted transition-colors",
-                        locale === lang.code ? "text-primary font-medium" : "text-muted-foreground"
-                      )}
-                      onClick={() => setLangOpen(false)}
-                    >
+                  <Link
+                    key={lang.code}
+                    href={`/${lang.code}${pathWithoutLocale}`}
+                    className={cn(
+                      "block px-4 py-2 text-sm hover:bg-muted transition-colors",
+                      locale === lang.code ? "text-primary font-medium" : "text-muted-foreground"
+                    )}
+                    onClick={() => setLangOpen(false)}
+                  >
                     {lang.label}
                   </Link>
                 ))}
               </div>
             )}
           </div>
+
           <ThemeToggle />
           <Button href={`/${locale}/login`} variant="primary">
             {th("login")}
@@ -156,6 +158,7 @@ export default function Header({ menuItems }: { menuItems?: NavItem[] }) {
                   </Link>
                 );
               })}
+
               <div className="flex items-center gap-4">
                 {languages.map((lang) => (
                   <Link
@@ -173,8 +176,9 @@ export default function Header({ menuItems }: { menuItems?: NavItem[] }) {
                   </Link>
                 ))}
               </div>
-          <ThemeToggle />
-          <Button href={`/${locale}/login`} variant="primary">
+
+              <ThemeToggle />
+              <Button href={`/${locale}/login`} variant="primary">
                 {th("login")}
               </Button>
             </nav>

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "@/components/common/Image";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import { Check } from "lucide-react";
 
 const features = [
@@ -14,6 +15,14 @@ const features = [
 ];
 
 export default function GerCampFeature() {
+  const locale = useLocale();
+  const withLocale = (path: string) => {
+    if (!path.startsWith("/")) return path;
+    if (path === "/") return `/${locale}`;
+    if (path.startsWith(`/${locale}/`) || path === `/${locale}`) return path;
+    return `/${locale}${path}`;
+  };
+
   return (
     <section className="relative overflow-hidden bg-[#F8F5EF]">
       <div className="mx-auto max-w-[1280px] px-6 pb-20 lg:pb-28">
@@ -72,13 +81,13 @@ export default function GerCampFeature() {
 
             <div className="mt-9 flex flex-col gap-4 sm:flex-row">
               <Link
-                href="/book-online"
+                href={withLocale("/book-online")}
                 className="inline-flex items-center justify-center rounded-full bg-[#2C2117] px-8 py-3.5 text-sm font-medium text-[#F8F5EF] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#9B6A2F] hover:shadow-lg"
               >
                 Book Your Journey
               </Link>
               <Link
-                href="/accommodation"
+                href={withLocale("/accommodation")}
                 className="inline-flex items-center justify-center rounded-full border border-[#9B6A2F] px-8 py-3.5 text-sm font-medium text-[#9B6A2F] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#9B6A2F] hover:text-white hover:shadow-lg"
               >
                 Explore Camps

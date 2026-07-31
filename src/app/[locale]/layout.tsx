@@ -43,19 +43,17 @@ export default async function LocaleLayout({
   ]);
 
   return (
-    <html lang={locale} className="h-full antialiased" suppressHydrationWarning>
-      <body className="min-h-full flex flex-col bg-background text-foreground">
-        <NextIntlClientProvider messages={messages}>
-          <ApolloClientProvider>
-            <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-              <SmoothScroll />
-              <Header menuItems={headerMenu} />
-              <main className="flex-1">{children}</main>
-              <Footer menuItems={footerMenu} />
-            </ThemeProvider>
-          </ApolloClientProvider>
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <div lang={locale} className="min-h-full flex flex-col">
+      <NextIntlClientProvider messages={messages}>
+        <ApolloClientProvider>
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+            <SmoothScroll />
+            <Header menuItems={headerMenu} />
+            <main className="flex-1">{children}</main>
+            <Footer menuItems={footerMenu} />
+          </ThemeProvider>
+        </ApolloClientProvider>
+      </NextIntlClientProvider>
+    </div>
   );
 }

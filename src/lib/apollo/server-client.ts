@@ -3,14 +3,10 @@ import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 export async function getServerApolloClient() {
   return new ApolloClient({
     link: new HttpLink({
-      uri:
-        process.env.ERXES_ENDPOINT ??
-        process.env.NEXT_PUBLIC_ERXES_ENDPOINT ??
-        process.env.GRAPHQL_URL ??
-        process.env.NEXT_PUBLIC_GRAPHQL_URL ??
-        "/graphql",
+      uri: process.env.ERXES_API_URL,
       headers: {
-        "x-app-token": process.env.ERXES_APP_TOKEN ?? "",
+        "erxes-app-token": process.env.ERXES_APP_TOKEN ?? "",
+        "x-app-token": process.env.ERXES_CLIENT_PORTAL_TOKEN ?? "",
       },
       fetchOptions: { next: { revalidate: 60 } },
     }),

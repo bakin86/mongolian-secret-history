@@ -1,5 +1,6 @@
 import InnerPageLayout from "@/components/layout/InnerPageLayout";
 import PageHero from "@/components/sections/PageHero";
+import CmsContent from "@/components/cms/CmsContent";
 import BuildYourTourSection from "@/components/sections/BuildYourTourSection";
 import PricingSection from "@/components/sections/PricingSection";
 import TeamCarousel from "@/components/sections/TeamCarousel";
@@ -26,6 +27,14 @@ export default async function PlanYourTripPage({ params }: PageProps) {
         title={cms?.name || "Plan Your Trip"}
         subtitle={(cms?.description ? stripHtml(cms.description) : "") || "Design your perfect Mongolia journey with our team"}
       />
+
+      {cms?.content && (
+        <section className="bg-white py-16 lg:py-24">
+          <div className="mx-auto max-w-[900px] px-6 lg:px-0">
+            <CmsContent html={cms.content} />
+          </div>
+        </section>
+      )}
 
       <BuildYourTourSection />
       <PricingSection />
