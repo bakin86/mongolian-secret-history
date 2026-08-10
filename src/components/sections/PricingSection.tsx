@@ -69,15 +69,15 @@ export default function PricingSection() {
               key={plan.title}
               variants={item}
               whileHover={{ y: -4, boxShadow: "0 10px 15px -3px rgba(18,63,174,0.08)" }}
-              className="rounded-[20px] bg-white border border-border p-10 flex flex-col gap-4 transition-all"
+              className="rounded-[20px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 flex flex-col gap-4 transition-all"
             >
-              <span className="text-sm text-muted-foreground">{plan.duration}</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">{plan.duration}</span>
               <span className="font-display text-3xl text-primary">{plan.price}</span>
-              <h3 className="font-display text-2xl text-foreground">{plan.title}</h3>
-              <p className="text-[15px] text-muted-foreground leading-relaxed">{plan.desc}</p>
+              <h3 className="font-display text-2xl text-slate-900 dark:text-white">{plan.title}</h3>
+              <p className="text-[15px] text-slate-600 dark:text-slate-300 leading-relaxed">{plan.desc}</p>
               <ul className="flex flex-col gap-3 mt-2">
                 {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <li key={feature} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
                     <Check size={16} className="text-primary" />
                     {feature}
                   </li>

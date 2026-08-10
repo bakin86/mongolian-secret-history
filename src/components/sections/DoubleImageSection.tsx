@@ -94,17 +94,19 @@ export default function DoubleImageSection({
             >
               {description}
             </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.65 }}
-              className="mt-8"
-            >
-              <Button href={href} variant="outline" className="uppercase text-[11px] tracking-[0.15em] px-6 py-3">
-                {cta}
-              </Button>
-            </motion.div>
+            {cta ? (
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.65 }}
+                className="mt-8"
+              >
+                <Button href={href} variant="outline" className="uppercase text-[11px] tracking-[0.15em] px-6 py-3">
+                  {cta}
+                </Button>
+              </motion.div>
+            ) : null}
           </motion.div>
 
           {/* Images grid */}

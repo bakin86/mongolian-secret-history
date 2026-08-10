@@ -32,8 +32,10 @@ export const defaultSettings: SiteSettings = {
 export async function getSiteSettings(locale: string): Promise<SiteSettings> {
   try {
     const page = await getCmsPage(locale, "settings");
-    if (!page?.content) return defaultSettings;
-    const parsed = JSON.parse(page.content) as Partial<SiteSettings>;
+    const content = page?.content?.trim();
+    if (!content || !content.startsWith("{")) return defaultSettings;
+    const parsed = JSON.parse(content) as Partial<SiteSettings>;
+    if (!parsed || typeof parsed !== "object") return defaultSettings;
     return {
       ...defaultSettings,
       ...parsed,

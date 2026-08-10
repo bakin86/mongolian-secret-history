@@ -23,28 +23,56 @@ function formatDate(dateString?: string, locale = "en") {
   });
 }
 
-const CATEGORY_ORDER = ["All", "Info", "Price", "Culture", "Nature"];
+const categoryMap: Record<string, string[]> = {
+  All: [],
+  Бүгд: [],
+  "Info & Tips": ["info", "мэдээлэл", "зөвлөгөө", "ayallyn-medeelel"],
+  "Аяллын мэдээлэл ба Зөвлөгөө": ["info", "мэдээлэл", "зөвлөгөө", "ayallyn-medeelel"],
+  "Price & Rates": ["price", "үнэ", "төсөв", "une-ba-tusviin"],
+  "Үнэ ба Төсвийн зөвлөмж": ["price", "үнэ", "төсөв", "une-ba-tusviin"],
+  "Travel Stories": ["story", "stories", "түүх", "түүхүүд", "ayallyn-tuukhuud"],
+  "Аяллын түүхүүд": ["story", "stories", "түүх", "түүхүүд", "ayallyn-tuukhuud"],
+};
+
+function formatCategoryName(name?: string, locale = "en"): string {
+  if (!name) return "";
+  if (locale === "en") {
+    const lower = name.toLowerCase();
+    if (lower.includes("мэдээлэл") || lower.includes("зөвлөгөө") || lower.includes("info")) return "Info & Tips";
+    if (lower.includes("үнэ") || lower.includes("төсөв") || lower.includes("price")) return "Price & Rates";
+    if (lower.includes("түүх") || lower.includes("story") || lower.includes("stories")) return "Travel Stories";
+  }
+  return name;
+}
+
+function matchesCategory(post: Post, activeCategory: string): boolean {
+  if (activeCategory === "All" || activeCategory === "Бүгд") return true;
+  const keywords = categoryMap[activeCategory] || [activeCategory.toLowerCase()];
+  const combined = [
+    ...(post.categories?.map((c) => c.name || "") || []),
+    ...(post.categories?.map((c) => c.slug || "") || []),
+    post.title || "",
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  return keywords.some((kw) => combined.includes(kw.toLowerCase()));
+}
 
 export default function BlogPage({ posts }: BlogPageProps) {
   const locale = useLocale();
   const t = useTranslations("blog");
-  const [activeCategory, setActiveCategory] = useState("All");
+  const defaultCat = locale === "mn" ? "Бүгд" : "All";
+  const [activeCategory, setActiveCategory] = useState(defaultCat);
 
   const categories = useMemo(() => {
-    const names = new Set(
-      posts
-        .flatMap((post) => post.categories ?? [])
-        .map((c) => c.name)
-        .filter((name): name is string => Boolean(name))
-    );
-    return CATEGORY_ORDER.filter((c) => c === "All" || names.has(c));
-  }, [posts]);
+    return locale === "mn"
+      ? ["Бүгд", "Аяллын мэдээлэл ба Зөвлөгөө", "Үнэ ба Төсвийн зөвлөмж", "Аяллын түүхүүд"]
+      : ["All", "Info & Tips", "Price & Rates", "Travel Stories"];
+  }, [locale]);
 
   const filteredPosts = useMemo(() => {
-    if (activeCategory === "All") return posts;
-    return posts.filter((post) =>
-      post.categories?.some((category) => category.name === activeCategory)
-    );
+    return posts.filter((post) => matchesCategory(post, activeCategory));
   }, [posts, activeCategory]);
 
   return (
@@ -80,15 +108,15 @@ export default function BlogPage({ posts }: BlogPageProps) {
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPosts.map((post) => (
+            {filteredPosts.map((post, idx) => (
               <motion.div
-                key={post._id}
+                key={post.slug || post._id || `post-${idx}`}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4 }}
                 whileHover={{ y: -4, boxShadow: "0 10px 15px -3px rgba(18,63,174,0.08)" }}
-                className="rounded-[20px] bg-white border border-border overflow-hidden transition-all"
+                className="rounded-[20px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden transition-all"
               >
                 <div className="relative h-[220px] w-full overflow-hidden"
                 >
@@ -101,21 +129,21 @@ export default function BlogPage({ posts }: BlogPageProps) {
                 </div>
                 <div className="p-6 flex flex-col gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-slate-500 dark:text-slate-400">
                       {formatDate(post.publishedDate, locale)}
                     </span>
                     {post.categories?.[0]?.name && (
-                      <span className="text-xs text-primary font-medium">
-                        {post.categories[0].name}
+                      <span className="text-xs text-primary font-semibold">
+                        {formatCategoryName(post.categories[0].name, locale)}
                       </span>
                     )}
                   </div>
                   <Link href={`/${locale}/blog/${post.slug}`} className="group">
-                    <h3 className="font-display text-xl text-foreground group-hover:text-primary transition-colors">
+                    <h3 className="font-display text-xl text-slate-900 dark:text-white group-hover:text-primary transition-colors">
                       {post.title}
                     </h3>
                   </Link>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{post.excerpt}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{post.excerpt}</p>
                 </div>
               </motion.div>
             ))}

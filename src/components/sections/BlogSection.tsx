@@ -63,7 +63,7 @@ export default function BlogSection({ posts = defaultPosts }: { posts?: BlogSect
               key={post.title}
               variants={item}
               whileHover={{ y: -4, boxShadow: "0 10px 15px -3px rgba(18,63,174,0.08)" }}
-              className="rounded-[20px] bg-white border border-border overflow-hidden transition-all"
+              className="rounded-[20px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden transition-all"
             >
               <div className="relative h-[220px] w-full overflow-hidden">
                 <Image
@@ -74,13 +74,13 @@ export default function BlogSection({ posts = defaultPosts }: { posts?: BlogSect
                 />
               </div>
               <div className="p-6 flex flex-col gap-2">
-                <span className="text-xs text-muted-foreground">{post.date}</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400">{post.date}</span>
                 <Link href={post.slug ? withLocale(`/blog/${post.slug}`) : withLocale("/blog")} className="group">
-                  <h3 className="font-display text-xl text-foreground group-hover:text-primary transition-colors">
+                  <h3 className="font-display text-xl text-slate-900 dark:text-white group-hover:text-primary transition-colors">
                     {post.title}
                   </h3>
                 </Link>
-                <p className="text-sm text-muted-foreground leading-relaxed">{post.excerpt}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{post.excerpt}</p>
               </div>
             </motion.div>
           ))}

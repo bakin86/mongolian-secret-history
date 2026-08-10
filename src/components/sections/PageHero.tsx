@@ -3,19 +3,26 @@
 import { motion } from "framer-motion";
 import Image from "@/components/common/Image";
 
+const DEFAULT_BANNER = "/images/tour-3.jpg";
+
 interface PageHeroProps {
   label: string;
   title: string;
   subtitle: string;
+  /** CMS Featured Image (erxes attachment key or URL). Falls back to the bundled banner. */
+  image?: string | null;
 }
 
-export default function PageHero({ label, title, subtitle }: PageHeroProps) {
+export default function PageHero({ label, title, subtitle, image }: PageHeroProps) {
   return (
     <section className="relative flex min-h-[480px] items-center justify-center overflow-hidden">
       <Image
-        src="/images/tour-3.jpg"
+        src={image || DEFAULT_BANNER}
+        fallback={DEFAULT_BANNER}
         alt={title}
         fill
+        priority
+        sizes="100vw"
         className="object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-primary-dark/80 via-primary-dark/70 to-primary-dark/80" />

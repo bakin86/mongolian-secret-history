@@ -23,15 +23,45 @@ const categoryKeys = [
   "classicTours",
 ];
 
-const categoryMap: Record<string, string> = {
-  all: "All",
-  adventureTours: "Adventure Tours",
-  bestSellers: "Best Sellers",
-  festivalTours: "Festival tours",
-  tailoredTours: "Tailored Tours",
-  winterTours: "Winter tours",
-  classicTours: "classic tours",
+const categoryAliases: Record<string, string[]> = {
+  all: [],
+  adventureTours: ["adventure", "барт", "адал явдалт", "fishing", "survival", "reindeer", "shamanism"],
+  bestSellers: ["best", "bestseller", "бэстселлер", "эрэлттэй", "gobi & kharkhorin", "10 days highlight", "naadam"],
+  festivalTours: ["festival", "баяр", "наадам", "эвент"],
+  tailoredTours: ["tailor", "custom", "хувийн", "захиалгат", "horse riding near amarbayasgalant"],
+  winterTours: ["winter", "өвөл", "өвлийн"],
+  classicTours: ["classic", "классик", "уламжлалт", "khustai & terelj", "ancient city", "khovsgol lake tour"],
 };
+
+function formatTourCategory(cat?: string, locale = "en"): string {
+  if (!cat) return "Adventure Tours";
+  if (locale === "en") {
+    const lower = cat.toLowerCase();
+    if (lower.includes("барт") || lower.includes("адал явдалт") || lower.includes("adventure")) return "Adventure Tours";
+    if (lower.includes("классик") || lower.includes("уламжлалт") || lower.includes("classic")) return "Classic Tours";
+    if (lower.includes("баяр") || lower.includes("наадам") || lower.includes("эвент") || lower.includes("festival")) return "Festival Tours";
+    if (lower.includes("эрэлттэй") || lower.includes("бэстселлер") || lower.includes("bestseller") || lower.includes("best")) return "Best Sellers";
+    if (lower.includes("хувийн") || lower.includes("захиалгат") || lower.includes("tailor")) return "Tailored Tours";
+    if (lower.includes("өвөл") || lower.includes("winter")) return "Winter Tours";
+    return cat;
+  }
+  return cat;
+}
+
+function isCategoryMatch(tour: TourDetailData, selectedCategoryKey: string): boolean {
+  if (selectedCategoryKey === "all") return true;
+  const keywords = categoryAliases[selectedCategoryKey] || [];
+  const combined = [
+    tour.category || "",
+    ...(tour.categories || []),
+    tour.title || "",
+    tour.slug || "",
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  return keywords.some((kw) => combined.includes(kw.toLowerCase()));
+}
 
 const tours = [
   {
@@ -132,7 +162,16 @@ const tours = [
   },
 ];
 
-export default function PortfolioClient() {
+import type { TourDetailData } from "@/lib/cms/tours";
+import { fallbackTours } from "@/lib/cms/tours";
+
+interface PortfolioClientProps {
+  initialTours?: TourDetailData[];
+  /** Banner image resolved on the server so it does not swap in after hydration. */
+  heroImage?: string | null;
+}
+
+export default function PortfolioClient({ initialTours, heroImage }: PortfolioClientProps) {
   const params = useParams();
   const locale = (params.locale as string) || "en";
   const t = useTranslations("tours");
@@ -140,11 +179,9 @@ export default function PortfolioClient() {
   const tc = useTranslations("common");
   const [activeCategory, setActiveCategory] = useState("all");
 
-  const activeEnglishCategory = categoryMap[activeCategory];
-  const filteredTours =
-    activeCategory === "all"
-      ? tours
-      : tours.filter((tour) => tour.category === activeEnglishCategory);
+  const tourList = initialTours && initialTours.length ? initialTours : fallbackTours;
+
+  const filteredTours = tourList.filter((tour) => isCategoryMatch(tour, activeCategory));
 
   return (
     <InnerPageLayout>
@@ -152,12 +189,13 @@ export default function PortfolioClient() {
         label={t("heroLabel")}
         title={cms?.name || t("heroTitle")}
         subtitle={(cms?.description ? stripHtml(cms.description) : "") || t("heroSubtitle")}
+        image={heroImage}
       />
 
       <section className="bg-background py-20 lg:py-[120px]">
         <div className="mx-auto max-w-[1200px] px-6 lg:px-0">
           <div className="text-center max-w-[800px] mx-auto mb-10">
-            <p className="text-lg leading-[1.7] text-muted-foreground">{t("intro")}</p>
+            <p className="text-lg leading-[1.7] text-slate-600 dark:text-slate-300">{t("intro")}</p>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
@@ -169,7 +207,7 @@ export default function PortfolioClient() {
                   "px-5 py-2.5 rounded-full text-sm font-medium border transition-colors",
                   activeCategory === category
                     ? "bg-primary text-white border-primary"
-                    : "bg-white text-primary border-primary hover:bg-primary-light"
+                    : "bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-800 hover:border-primary hover:text-primary"
                 )}
               >
                 {t(category)}
@@ -194,22 +232,22 @@ export default function PortfolioClient() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.4 }}
                   whileHover={{ y: -4, boxShadow: "0 10px 15px -3px rgba(18,63,174,0.08)" }}
-                  className="rounded-[20px] bg-white border border-border overflow-hidden transition-all"
+                  className="rounded-[20px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden transition-all"
                 >
                   <div className="relative h-[240px] w-full overflow-hidden">
                     <Image src={tour.image} alt={tour.title} fill className="object-cover transition-transform duration-700 hover:scale-105" />
                   </div>
                   <div className="p-6 flex flex-col gap-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">{tour.duration}</span>
-                      <span className="text-xs px-2.5 py-1 rounded-full bg-muted text-primary">{tour.category}</span>
+                      <span className="text-sm text-slate-500 dark:text-slate-400">{tour.duration}</span>
+                      <span className="text-xs px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-primary font-medium">{formatTourCategory(tour.category, locale)}</span>
                     </div>
-                    <h3 className="font-display text-xl text-foreground">{tour.title}</h3>
+                    <h3 className="font-display text-xl text-slate-900 dark:text-white">{tour.title}</h3>
                     <div className="flex items-center justify-between mt-2">
-                      <span className="text-primary font-display text-lg">{tour.price}</span>
+                      <span className="text-primary font-display text-lg font-bold">{tour.price}</span>
                       <Link
                         href={`/${locale}/portfolio/${tour.slug}`}
-                        className="flex items-center gap-1 text-sm text-gold hover:text-gold-dark transition-colors"
+                        className="flex items-center gap-1 text-sm font-semibold text-primary hover:text-primary-dark transition-colors"
                       >
                         {tc("viewDetails")} <ArrowRight size={14} />
                       </Link>

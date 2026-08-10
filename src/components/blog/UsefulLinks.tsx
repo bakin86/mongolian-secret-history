@@ -50,7 +50,7 @@ function LinkCard({
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex flex-col justify-between h-full min-h-[120px] rounded-2xl bg-muted p-5 lg:p-6 transition-all hover:shadow-[0_10px_15px_-3px_rgba(18,63,174,0.08)]"
+      className="group flex flex-col justify-between h-full min-h-[120px] rounded-2xl bg-slate-900 dark:bg-slate-900 border border-slate-800 p-5 lg:p-6 transition-all hover:shadow-[0_10px_15px_-3px_rgba(18,63,174,0.08)]"
     >
       <div className="flex items-center gap-2.5">
         <motion.div
@@ -60,11 +60,11 @@ function LinkCard({
         >
           <Icon className="h-5 w-5" />
         </motion.div>
-        <span className="font-sans font-bold text-[17px] lg:text-[18px] text-foreground">
+        <span className="font-sans font-bold text-[17px] lg:text-[18px] text-white">
           {title}
         </span>
       </div>
-      <div className="flex items-center gap-1 text-[14px] lg:text-[15px] text-primary mt-4">
+      <div className="flex items-center gap-1 text-[14px] lg:text-[15px] text-blue-300 hover:text-white mt-4">
         <span className="group-hover:underline">{label ?? "Official Website"}</span>
         <motion.span
           whileHover={{ x: 2, y: -2 }}
@@ -79,16 +79,16 @@ function LinkCard({
 
 export default function UsefulLinks() {
   return (
-    <section className="bg-white py-20 lg:py-[120px]">
+    <section className="bg-white dark:bg-slate-950 py-20 lg:py-[120px]">
       <div className="mx-auto max-w-[1200px] px-6 lg:px-0">
-        <hr className="border-border mb-14" />
+        <hr className="border-slate-200 dark:border-slate-800 mb-14" />
 
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="font-display text-center text-3xl md:text-4xl lg:text-[36px] leading-[1.15] mb-12"
+          className="font-display text-center text-3xl md:text-4xl lg:text-[36px] leading-[1.15] text-slate-900 dark:text-white mb-12"
         >
           Useful Links
         </motion.h2>
@@ -116,7 +116,7 @@ export default function UsefulLinks() {
 
           <motion.div
             variants={item}
-            className="flex flex-col justify-between h-full min-h-[120px] rounded-2xl bg-muted p-5 lg:p-6 transition-all hover:shadow-[0_10px_15px_-3px_rgba(18,63,174,0.08)]"
+            className="flex flex-col justify-between h-full min-h-[120px] rounded-2xl bg-slate-900 dark:bg-slate-900 border border-slate-800 p-5 lg:p-6 transition-all hover:shadow-[0_10px_15px_-3px_rgba(18,63,174,0.08)]"
           >
             <div className="flex items-center gap-2.5">
               <motion.div
@@ -126,7 +126,7 @@ export default function UsefulLinks() {
               >
                 <Plane className="w-5 h-5" />
               </motion.div>
-              <span className="font-sans font-bold text-[17px] lg:text-[18px] text-foreground">
+              <span className="font-sans font-bold text-[17px] lg:text-[18px] text-white">
                 Airlines
               </span>
             </div>
@@ -137,7 +137,7 @@ export default function UsefulLinks() {
                   href={airline.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[14px] lg:text-[15px] text-primary hover:underline"
+                  className="text-[14px] lg:text-[15px] text-blue-300 hover:text-white hover:underline"
                 >
                   {airline.name}
                 </a>
@@ -146,7 +146,7 @@ export default function UsefulLinks() {
           </motion.div>
         </motion.div>
 
-        <p className="mt-10 text-center text-sm text-muted-foreground">
+        <p className="mt-10 text-center text-sm text-slate-600 dark:text-slate-400">
           Official resources that may be helpful before and during your visit to Mongolia.
         </p>
       </div>

@@ -30,6 +30,7 @@ export default async function ContactPage({ params }: PageProps) {
         label={t("heroLabel")}
         title={cms?.name || t("heroTitle")}
         subtitle={(cms?.description ? stripHtml(cms.description) : "") || t("heroSubtitle")}
+        image={cms?.thumbnail?.url}
       />
 
       <section className="bg-background py-16 lg:py-20">

@@ -1,6 +1,7 @@
 import { getServerApolloClient } from "@/lib/apollo/server-client";
 import { CP_POSTS } from "@/graphql/cms/queries/post";
 import type { CpPostsData, CpPostsVariables, Post } from "@/graphql/cms/queries/post";
+import { HOME_BLOCK_POST_TYPE } from "@/lib/cms/homeBlocks";
 
 const fallbackPosts: Post[] = [
   {
@@ -35,25 +36,67 @@ const fallbackPosts: Post[] = [
 export async function getCmsPosts(locale: string, limit = 100) {
   try {
     const client = await getServerApolloClient();
-    const { data } = await client.query<CpPostsData, CpPostsVariables>({
-      query: CP_POSTS,
-      variables: { language: locale, limit },
-      context: { fetchOptions: { next: { revalidate: 60 } } },
-    });
-    const posts = data?.cpPosts ?? [];
-    return posts.length ? posts : fallbackPosts;
+    const { CP_POST_LIST } = await import("@/graphql/cms/queries/post");
+
+    // The blog list is an exclusion list, so every new custom post type shows up
+    // here until it is named. Home page sections are resolved by their type key
+    // rather than a hardcoded id, which the API only ever returns opaque.
+    const [all, homeBlocks] = await Promise.all([
+      client.query<{ cpPostList?: { posts: Post[] } }>({
+        query: CP_POST_LIST,
+        variables: { language: locale, limit },
+        context: { fetchOptions: { next: { revalidate: 0 } } },
+      }),
+      client.query<{ cpPostList?: { posts: Post[] } }>({
+        query: CP_POST_LIST,
+        variables: { language: locale, type: HOME_BLOCK_POST_TYPE, limit: 100 },
+        context: { fetchOptions: { next: { revalidate: 0 } } },
+      }),
+    ]);
+
+    const allPosts: Post[] = (all.data?.cpPostList?.posts ?? []) as Post[];
+    const homeBlockTypes = new Set(
+      (homeBlocks.data?.cpPostList?.posts ?? [])
+        .map((p) => p.type)
+        .filter((type): type is string => Boolean(type))
+    );
+
+    return allPosts.filter(
+      (p) =>
+        p.type !== "USl4jFjiPIkPDcZz5uQEK" &&
+        p.type !== "tour" &&
+        p.type !== "tours" &&
+        !(p.type && homeBlockTypes.has(p.type))
+    );
   } catch (error) {
-    console.error("Failed to fetch CMS posts:", error);
-    return fallbackPosts;
+    console.warn("CMS posts query error:", error instanceof Error ? error.message : String(error));
+    return [];
   }
 }
 
-export async function getCmsPost(locale: string, slug: string) {
+export async function getAboutMongoliaPosts(locale: string) {
   try {
-    const posts = await getCmsPosts(locale);
-    return posts.find((post) => post.slug === slug) || fallbackPosts[0];
+    const client = await getServerApolloClient();
+    const { CP_POST_LIST } = await import("@/graphql/cms/queries/post");
+    const { data } = await client.query<{ cpPostList?: { posts: Post[] } }>({
+      query: CP_POST_LIST,
+      variables: { language: locale, limit: 50 },
+      context: { fetchOptions: { next: { revalidate: 0 } } },
+    });
+    const allPosts: Post[] = (data?.cpPostList?.posts ?? []) as Post[];
+    return allPosts.filter(
+      (p) =>
+        p.type === "bHrQRkNv4dzraWjXi7ggb" ||
+        p.categories?.some(
+          (c) =>
+            c.slug?.includes("soyol") ||
+            c.slug?.includes("country") ||
+            c.name?.includes("Соёл") ||
+            c.name?.includes("Улс орон")
+        )
+    );
   } catch (error) {
-    console.error("Failed to fetch CMS post:", error);
-    return fallbackPosts[0];
+    console.warn("Failed to fetch About Mongolia posts:", error);
+    return [];
   }
 }

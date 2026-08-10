@@ -10,6 +10,7 @@ interface SpaSectionProps {
   images: { src: string; alt: string }[];
   href: string;
   cta: string;
+  reversed?: boolean;
 }
 
 export default function SpaSection({
@@ -18,13 +19,18 @@ export default function SpaSection({
   images,
   href,
   cta,
+  reversed = false,
 }: SpaSectionProps) {
   return (
     <section className="bg-[#FAFAF8] py-6 md:py-10">
       <div className="container-custom">
         <div className="grid items-stretch gap-6 lg:grid-cols-2">
           {/* Stacked images */}
-          <div className="grid grid-rows-2 gap-4">
+          <div
+            className={`grid grid-rows-2 gap-4 ${
+              reversed ? "lg:order-2" : "lg:order-1"
+            }`}
+          >
             {images.map((img, i) => (
               <motion.div
                 key={i}
@@ -58,7 +64,9 @@ export default function SpaSection({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="flex flex-col justify-center bg-white p-8 md:p-12 lg:p-16"
+            className={`flex flex-col justify-center bg-white p-8 md:p-12 lg:p-16 ${
+              reversed ? "lg:order-1" : "lg:order-2"
+            }`}
           >
             <motion.h3
               initial={{ opacity: 0, y: 24 }}
@@ -78,17 +86,19 @@ export default function SpaSection({
             >
               {description}
             </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.65 }}
-              className="mt-8"
-            >
-              <Button href={href} variant="outline" className="uppercase text-[11px] tracking-[0.15em] px-6 py-3">
-                {cta}
-              </Button>
-            </motion.div>
+            {cta ? (
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.65 }}
+                className="mt-8"
+              >
+                <Button href={href} variant="outline" className="uppercase text-[11px] tracking-[0.15em] px-6 py-3">
+                  {cta}
+                </Button>
+              </motion.div>
+            ) : null}
           </motion.div>
         </div>
       </div>

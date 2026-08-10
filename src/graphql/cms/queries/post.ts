@@ -109,6 +109,7 @@ const POST_FRAGMENT = gql`
       colorCode
     }
     customFieldsData
+    customFieldsMap
     createdAt
     updatedAt
   }
@@ -247,10 +248,6 @@ export const CP_POST_LIST = gql`
         ...PostFields
       }
       totalCount
-      pageInfo {
-        cursor
-        totalCount
-      }
     }
   }
 `;

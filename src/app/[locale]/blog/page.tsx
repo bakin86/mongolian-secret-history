@@ -158,9 +158,8 @@ const staticPosts: Post[] = [
   },
 ];
 
-interface PageProps {
-  params: Promise<{ locale: string }>;
-}
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -168,11 +167,8 @@ interface PageProps {
 
 export default async function BlogPage({ params }: PageProps) {
   const { locale } = await params;
-  const cmsPosts = await getCmsPosts(locale, 15);
-  // Merge CMS posts with static fallback up to 15 cards total
-  const posts = cmsPosts.length
-    ? [...cmsPosts, ...staticPosts.filter((p) => !cmsPosts.some((c) => c.slug === p.slug))].slice(0, 15)
-    : staticPosts;
+  const cmsPosts = await getCmsPosts(locale, 50);
+  const posts = cmsPosts.length > 0 ? cmsPosts : staticPosts;
   return (
     <>
       <BlogPageClient posts={posts} />

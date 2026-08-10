@@ -54,13 +54,13 @@ export default function FAQSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="rounded-xl bg-white border border-border overflow-hidden shadow-sm"
+                className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm"
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : index)}
                   className="w-full flex items-center justify-between p-6 text-left"
                 >
-                  <span className="font-display text-lg text-foreground pr-4">{faq.question}</span>
+                  <span className="font-display text-lg text-slate-900 dark:text-white pr-4">{faq.question}</span>
                   {isOpen ? (
                     <Minus size={22} className="text-primary shrink-0" />
                   ) : (
@@ -75,7 +75,7 @@ export default function FAQSection() {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.25 }}
                     >
-                      <p className="px-6 pb-6 text-[15px] text-muted-foreground leading-relaxed">
+                      <p className="px-6 pb-6 text-[15px] text-slate-600 dark:text-slate-300 leading-relaxed">
                         {faq.answer}
                       </p>
                     </motion.div>

@@ -63,7 +63,7 @@ export default function SplitCardSection({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className={`flex flex-col justify-center bg-white p-8 md:p-12 lg:p-16 ${
+            className={`flex flex-col justify-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 md:p-12 lg:p-16 ${
               reversed ? "lg:order-1" : "lg:order-2"
             }`}
           >
@@ -72,7 +72,7 @@ export default function SplitCardSection({
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.35 }}
-              className="font-elegant text-3xl md:text-4xl font-medium text-[#0A2C7A]"
+              className="font-elegant text-3xl md:text-4xl font-medium text-[#0A2C7A] dark:text-white"
             >
               {title}
             </motion.h3>
@@ -81,21 +81,23 @@ export default function SplitCardSection({
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="text-[#5A5A5A] leading-[1.8] text-sm md:text-base mt-5"
+              className="text-[#5A5A5A] dark:text-slate-300 leading-[1.8] text-sm md:text-base mt-5"
             >
               {description}
             </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.65 }}
-              className="mt-8"
-            >
-              <Button href={href} variant="outline" className="uppercase text-[11px] tracking-[0.15em] px-6 py-3">
-                {cta}
-              </Button>
-            </motion.div>
+            {cta ? (
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.65 }}
+                className="mt-8"
+              >
+                <Button href={href} variant="outline" className="uppercase text-[11px] tracking-[0.15em] px-6 py-3">
+                  {cta}
+                </Button>
+              </motion.div>
+            ) : null}
           </motion.div>
         </div>
       </div>

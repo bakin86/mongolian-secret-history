@@ -439,6 +439,18 @@ function StaticPostLayout({
   );
 }
 
+function formatBlogContent(content?: string): string {
+  if (!content) return "";
+  const trimmed = content.trim();
+  if (/<[a-z][\s\S]*>/i.test(trimmed)) {
+    return trimmed;
+  }
+  return trimmed
+    .split(/\n\s*\n/)
+    .map((para) => `<p class="mb-4 text-base leading-relaxed">${para.replace(/\n/g, "<br/>")}</p>`)
+    .join("");
+}
+
 function CmsPostLayout({
   locale,
   post,
@@ -448,7 +460,28 @@ function CmsPostLayout({
   post: Post;
   related: Post[];
 }) {
-  const image = post.thumbnail?.url || "/images/tour-2.jpg";
+  const fileBaseUrl = process.env.NEXT_PUBLIC_ERXES_FILE_URL || "https://mongoliansecretstory.next.erxes.io/gateway/read-file?key=";
+  const rawImage = post.thumbnail?.url || "";
+  const image = rawImage ? (rawImage.startsWith("http") ? rawImage : `${fileBaseUrl}${rawImage}`) : "/images/tour-2.jpg";
+
+  const customMap = (post.customFieldsMap ?? {}) as Record<string, Record<string, unknown>>;
+  const customData = (post.customFieldsData ?? {}) as Record<string, unknown>;
+
+  const blogDetails = customMap["blog-details"] || customMap["blog_details"] || {};
+
+  const authorName = String(blogDetails.author_name || customData.author_name || "About the Author");
+  const authorBio = String(
+    blogDetails.author_bio ||
+      customData.author_bio ||
+      "Written by the travel team at Mongolian Secret History, sharing local insights and practical tips from years of exploring the steppe."
+  );
+  const rawAvatar = String(blogDetails.author_avatar || customData.author_avatar || "");
+  const authorAvatar = rawAvatar
+    ? rawAvatar.startsWith("http")
+      ? rawAvatar
+      : `${fileBaseUrl}${rawAvatar}`
+    : undefined;
+
   return (
     <section className="bg-background py-20 lg:py-[120px]">
       <div className="mx-auto max-w-[1200px] px-6 lg:px-0">
@@ -460,20 +493,31 @@ function CmsPostLayout({
 
             <div
               className="prose prose-lg max-w-none text-muted-foreground"
-              dangerouslySetInnerHTML={{ __html: post.content || "" }}
+              dangerouslySetInnerHTML={{ __html: formatBlogContent(post.content) }}
             />
           </article>
 
           <aside className="flex flex-col gap-6">
             <div className="bg-white rounded-[20px] border border-border p-6">
-              <h4 className="font-display text-lg text-foreground mb-4">About the Author</h4>
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-primary">
-                  <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.314 0-10 1.657-10 5v2h20v-2c0-3.343-6.686-5-10-5z" fill="currentColor"/>
-                </svg>
+              <span className="text-xs font-semibold text-primary uppercase tracking-wider block mb-3">
+                About the Author
+              </span>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="relative w-14 h-14 rounded-full bg-primary/10 overflow-hidden shrink-0 border border-border shadow-sm">
+                  {authorAvatar ? (
+                    <Image src={authorAvatar} alt={authorName} fill className="object-cover" />
+                  ) : (
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-primary">
+                      <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.314 0-10 1.657-10 5v2h20v-2c0-3.343-6.686-5-10-5z" fill="currentColor"/>
+                    </svg>
+                  )}
+                </div>
+                <div>
+                  <h4 className="font-display text-lg font-bold text-foreground leading-tight">{authorName}</h4>
+                </div>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Written by the travel team at Mongolian Secret History, sharing local insights and practical tips from years of exploring the steppe.
+                {authorBio}
               </p>
             </div>
 

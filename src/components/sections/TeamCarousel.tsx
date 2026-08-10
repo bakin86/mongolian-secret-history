@@ -69,12 +69,11 @@ export default function TeamCarousel() {
               className="absolute top-1/2 left-1/2 w-[280px] md:w-[340px] -translate-x-1/2 -translate-y-1/2"
             >
               <div
-                className={`flex flex-col items-center rounded-[28px] border border-border bg-white p-6 md:p-8 text-center shadow-lg transition-shadow ${
+                className={`flex flex-col items-center rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 md:p-8 text-center shadow-lg transition-shadow ${
                   isActive ? "shadow-2xl" : "shadow-md"
                 }`}
               >
-                <div className="relative h-[180px] w-[180px] md:h-[220px] md:w-[220px] shrink-0 overflow-hidden rounded-[24px] border border-border"
-                >
+                <div className="relative h-[180px] w-[180px] md:h-[220px] md:w-[220px] shrink-0 overflow-hidden rounded-[24px] border border-slate-200 dark:border-slate-800">
                   <Image
                     src="/images/tour-6.jpg"
                     alt={member.name}
@@ -82,17 +81,15 @@ export default function TeamCarousel() {
                     className="object-cover"
                   />
                 </div>
-                <h3 className="font-display mt-6 text-[22px] md:text-[26px] text-foreground"
-                >
+                <h3 className="font-display mt-6 text-[22px] md:text-[26px] text-slate-900 dark:text-white">
                   {member.name}
                 </h3>
-                <span className="mt-1 text-sm text-primary">{member.role}</span>
-                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+                <span className="mt-1 text-sm font-semibold text-primary">{member.role}</span>
+                <p className="mt-3 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                   {member.bio}
                 </p>
                 {isActive && (
-                  <button className="mt-5 rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-dark"
-                  >
+                  <button className="mt-5 rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-dark">
                     Meet {member.name.split(" ")[0]}
                   </button>
                 )}

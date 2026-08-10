@@ -47,13 +47,13 @@ export default function TestimonialsSection() {
             <motion.div
               {...float}
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-              className="rounded-[26px] bg-white p-6 shadow-lg border border-border"
+              className="rounded-[26px] bg-white dark:bg-slate-900 p-6 shadow-lg border border-slate-200 dark:border-slate-800"
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-muted">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary-light dark:bg-slate-800">
                 <Compass className="h-5 w-5 text-primary" />
               </div>
-              <h3 className="font-display mt-5 text-2xl">Authentic Journeys</h3>
-              <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
+              <h3 className="font-display mt-5 text-2xl text-slate-900 dark:text-white">Authentic Journeys</h3>
+              <p className="mt-3 text-[15px] leading-relaxed text-slate-600 dark:text-slate-300">
                 Every trip is crafted to connect you with Mongolia’s landscapes, culture, and nomadic traditions.
               </p>
             </motion.div>
@@ -61,15 +61,15 @@ export default function TestimonialsSection() {
             <motion.div
               {...float}
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
-              className="rounded-[26px] bg-white p-6 shadow-lg border border-border"
+              className="rounded-[26px] bg-white dark:bg-slate-900 p-6 shadow-lg border border-slate-200 dark:border-slate-800"
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-muted">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary-light dark:bg-slate-800">
                 <Mail className="h-5 w-5 text-primary" />
               </div>
-              <blockquote className="font-display mt-5 text-xl leading-relaxed text-foreground">
+              <blockquote className="font-display mt-5 text-xl leading-relaxed text-slate-900 dark:text-white">
                 &ldquo;Of all the awesome new friends we made, the guides were the best. We plan to return and head East.&rdquo;
               </blockquote>
-              <span className="mt-5 block text-sm text-muted-foreground">Sarah & Tom, USA</span>
+              <span className="mt-5 block text-sm text-slate-500 dark:text-slate-400">Sarah & Tom, USA</span>
             </motion.div>
           </div>
 
@@ -77,9 +77,9 @@ export default function TestimonialsSection() {
           <motion.div
             {...float}
             transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
-            className="relative z-20 mx-auto flex h-[570px] w-[310px] flex-col overflow-hidden rounded-[44px] border-[8px] border-foreground bg-foreground shadow-2xl"
+            className="relative z-20 mx-auto flex h-[570px] w-[310px] flex-col overflow-hidden rounded-[44px] border-[8px] border-slate-900 dark:border-slate-800 bg-slate-900 shadow-2xl"
           >
-            <div className="relative flex h-11 items-center justify-between bg-foreground px-5 text-white">
+            <div className="relative flex h-11 items-center justify-between bg-slate-900 px-5 text-white">
               <span className="text-sm font-medium">9:41</span>
               <div className="absolute left-1/2 top-1/2 h-5 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black" />
               <div className="flex items-center gap-1.5">
@@ -105,23 +105,23 @@ export default function TestimonialsSection() {
                   <Image src="/images/tour-6.jpg" alt="Featured guide" fill className="object-cover" />
                 </div>
                 <div className="mt-4 text-white">
-                  <h3 className="font-display text-lg">Boldbaatar</h3>
+                  <h3 className="font-display text-lg text-white">Boldbaatar</h3>
                   <span className="text-xs uppercase tracking-wider text-white/60">Founder & Lead Guide</span>
                 </div>
               </div>
 
-              <div className="rounded-[24px] bg-white p-6">
-                <h3 className="font-display text-xl text-foreground">Dr. James McKelvie</h3>
-                <p className="mt-1 text-sm text-muted-foreground">Specialist in Advanced Mongolia Expeditions</p>
+              <div className="rounded-[24px] bg-white dark:bg-slate-800 p-6">
+                <h3 className="font-display text-xl text-slate-900 dark:text-white">Dr. James McKelvie</h3>
+                <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Specialist in Advanced Mongolia Expeditions</p>
                 <div className="mt-5 flex items-center gap-2">
                   <Link
                     href={`/${locale}/book-online`}
-                    className="inline-flex items-center justify-center rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-white transition-transform hover:scale-105"
+                    className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-white transition-transform hover:scale-105"
                   >
                     Book Now
                   </Link>
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-border">
-                    <span className="h-2 w-2 rounded-full bg-foreground" />
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 dark:border-slate-700">
+                    <span className="h-2 w-2 rounded-full bg-primary" />
                   </span>
                 </div>
               </div>
@@ -133,18 +133,18 @@ export default function TestimonialsSection() {
             <motion.div
               {...float}
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
-              className="rounded-[26px] bg-white p-6 shadow-lg border border-border"
+              className="rounded-[26px] bg-white dark:bg-slate-900 p-6 shadow-lg border border-slate-200 dark:border-slate-800"
             >
               <div className="flex items-center gap-4">
-                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-muted">
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-primary-light dark:bg-slate-800">
                   <Image src="/images/tour-6.jpg" alt="Marie" fill className="object-cover" />
                 </div>
                 <div>
-                  <h3 className="font-display text-xl">Marie Dupont</h3>
-                  <span className="text-sm text-muted-foreground">Cultural Traveler, France</span>
+                  <h3 className="font-display text-xl text-slate-900 dark:text-white">Marie Dupont</h3>
+                  <span className="text-sm text-slate-500 dark:text-slate-400">Cultural Traveler, France</span>
                 </div>
               </div>
-              <p className="mt-5 text-[15px] leading-relaxed text-muted-foreground">
+              <p className="mt-5 text-[15px] leading-relaxed text-slate-600 dark:text-slate-300">
                 The high level of service that the team provided made this a happy memory to take on my next adventure.
               </p>
             </motion.div>
@@ -152,13 +152,13 @@ export default function TestimonialsSection() {
             <motion.div
               {...float}
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
-              className="rounded-[26px] bg-white p-6 shadow-lg border border-border"
+              className="rounded-[26px] bg-white dark:bg-slate-900 p-6 shadow-lg border border-slate-200 dark:border-slate-800"
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-muted">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary-light dark:bg-slate-800">
                 <Award className="h-5 w-5 text-primary" />
               </div>
-              <h3 className="font-display mt-5 text-2xl">Why Travelers Choose Us</h3>
-              <ul className="mt-4 space-y-3 text-[15px] text-muted-foreground">
+              <h3 className="font-display mt-5 text-2xl text-slate-900 dark:text-white">Why Travelers Choose Us</h3>
+              <ul className="mt-4 space-y-3 text-[15px] text-slate-600 dark:text-slate-300">
                 <li className="flex items-start gap-2">
                   <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
                   20+ years of experience
@@ -177,17 +177,17 @@ export default function TestimonialsSection() {
             <motion.div
               {...float}
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.6 }}
-              className="overflow-hidden rounded-[26px] bg-white shadow-lg border border-border"
+              className="overflow-hidden rounded-[26px] bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800"
             >
-              <div className="bg-foreground px-6 py-4 text-white">
+              <div className="bg-primary-dark px-6 py-4 text-white">
                 <div className="flex items-center gap-2">
                   <span className="text-2xl font-bold">FREE</span>
                   <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium">Zero Cost Guarantee</span>
                 </div>
               </div>
               <div className="p-6">
-                <h3 className="font-display text-2xl text-foreground">Custom Itinerary Planning</h3>
-                <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
+                <h3 className="font-display text-2xl text-slate-900 dark:text-white">Custom Itinerary Planning</h3>
+                <p className="mt-3 text-[15px] leading-relaxed text-slate-600 dark:text-slate-300">
                   Get a personalized trip plan with no upfront fees. We design it around your dates and interests.
                 </p>
                 <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -199,7 +199,7 @@ export default function TestimonialsSection() {
                   </Link>
                   <Link
                     href={`/${locale}/contact`}
-                    className="inline-flex items-center gap-2 text-sm font-medium text-foreground underline underline-offset-4"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-slate-900 dark:text-white underline underline-offset-4"
                   >
                     Start Planning
                   </Link>

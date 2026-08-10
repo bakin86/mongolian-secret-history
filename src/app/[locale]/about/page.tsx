@@ -13,10 +13,46 @@ interface PageProps {
   params: Promise<{ locale: string } >;
 }
 
+import { getAboutMongoliaPosts } from "@/lib/cms/posts";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function AboutPage({ params }: PageProps) {
   const { locale } = await params;
   const cms = await getCmsPage(locale, "about");
   const t = await getTranslations("about");
+  const aboutPosts = await getAboutMongoliaPosts(locale);
+
+  const countryPost = aboutPosts.find(
+    (p) =>
+      p.categories?.some((c) => c.slug?.includes("country") || c.name?.includes("Улс орон")) ||
+      (p.title || "").toLowerCase().includes("country") ||
+      (p.title || "").toLowerCase().includes("land")
+  );
+
+  const culturePost = aboutPosts.find(
+    (p) =>
+      p.categories?.some((c) => c.slug?.includes("soyol") || c.name?.includes("Соёл")) ||
+      (p.title || "").toLowerCase().includes("culture") ||
+      (p.title || "").toLowerCase().includes("nomadic")
+  ) || aboutPosts[0];
+
+  const countryData = {
+    label: t("countryLabel"),
+    title: countryPost?.title || t("countryTitle"),
+    desc1: countryPost?.excerpt || t("countryDesc1"),
+    desc2: countryPost?.excerpt ? "" : t("countryDesc2"),
+    image: countryPost?.thumbnail?.url || "/images/hero-steppe.jpg",
+  };
+
+  const cultureData = {
+    label: t("cultureLabel"),
+    title: culturePost?.title || t("cultureTitle"),
+    desc1: culturePost?.excerpt || t("cultureDesc1"),
+    desc2: culturePost?.excerpt ? "" : t("cultureDesc2"),
+    image: culturePost?.thumbnail?.url || "/images/culture-naadam.jpg",
+  };
 
   return (
     <InnerPageLayout>
@@ -24,22 +60,10 @@ export default async function AboutPage({ params }: PageProps) {
         label={t("heroLabel")}
         title={cms?.name || t("heroTitle")}
         subtitle={(cms?.description ? stripHtml(cms.description) : "") || t("heroSubtitle")}
+        image={cms?.thumbnail?.url}
       />
 
-      <AboutSections
-        country={{
-          label: t("countryLabel"),
-          title: t("countryTitle"),
-          desc1: t("countryDesc1"),
-          desc2: t("countryDesc2"),
-        }}
-        culture={{
-          label: t("cultureLabel"),
-          title: t("cultureTitle"),
-          desc1: t("cultureDesc1"),
-          desc2: t("cultureDesc2"),
-        }}
-      />
+      <AboutSections country={countryData} culture={cultureData} />
 
       <section id="regions" className="bg-white py-20 lg:py-[120px]">
         <div className="mx-auto max-w-[1200px] px-6 lg:px-0">

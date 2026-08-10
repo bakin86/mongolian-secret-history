@@ -35,13 +35,13 @@ export default function SectionHeader({
       <span className="gold-line" />
       <h2
         className={`font-display text-3xl md:text-4xl lg:text-[44px] leading-tight ${
-          light ? "text-white" : "text-foreground"
+          light ? "text-white" : "text-slate-900 dark:text-white"
         }`}
       >
         {title}
       </h2>
       {subtitle && (
-        <p className={`max-w-[640px] text-lg leading-relaxed ${light ? "text-white/85" : "text-muted-foreground"}`}>
+        <p className={`max-w-[640px] text-lg leading-relaxed ${light ? "text-white/85" : "text-slate-600 dark:text-slate-300"}`}>
           {subtitle}
         </p>
       )}

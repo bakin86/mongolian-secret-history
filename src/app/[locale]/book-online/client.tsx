@@ -30,7 +30,12 @@ const paymentMethods = [
   { id: "card" as PaymentMethod, label: "Card", icon: "💳" },
 ];
 
-export default function BookOnlineClient() {
+interface BookOnlineClientProps {
+  /** Banner image resolved on the server so it does not swap in after hydration. */
+  heroImage?: string | null;
+}
+
+export default function BookOnlineClient({ heroImage }: BookOnlineClientProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("tours");
   const [showPayment, setShowPayment] = useState(false);
   const [customerType, setCustomerType] = useState<CustomerType>("individual");
@@ -54,6 +59,7 @@ export default function BookOnlineClient() {
         label="Reservations"
         title={cms?.name || "Book Online"}
         subtitle={(cms?.description ? stripHtml(cms.description) : "") || "Reserve your tour, accommodation, or travel services with our team"}
+        image={heroImage}
       />
 
       <section className="bg-background pt-16 pb-12 lg:pt-[80px] lg:pb-[60px]">

@@ -66,6 +66,7 @@ export default async function AccommodationPage({ params }: PageProps) {
         label={t("heroLabel")}
         title={cms?.name || t("heroTitle")}
         subtitle={(cms?.description ? stripHtml(cms.description) : "") || t("heroSubtitle")}
+        image={cms?.thumbnail?.url}
       />
 
       <AccommodationSticky items={accommodations} locale={locale} />

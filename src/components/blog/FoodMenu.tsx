@@ -289,9 +289,9 @@ function PriceTagIcon() {
 
 export default function FoodMenu() {
   return (
-    <section className="bg-[#F8F3EF] py-16 lg:py-24">
+    <section className="bg-[#F8F3EF] dark:bg-slate-950 py-16 lg:py-24">
       <div className="mx-auto max-w-[1100px] px-6">
-        <h2 className="text-center font-display text-3xl md:text-4xl text-[#3A2E2A] mb-14">
+        <h2 className="text-center font-display text-3xl md:text-4xl text-slate-900 dark:text-white mb-14">
           Menu
         </h2>
 
@@ -299,16 +299,16 @@ export default function FoodMenu() {
           <div key={category.title} className="mb-14">
             <div className="flex items-center justify-center gap-2 mb-8">
               <span className="text-lg">{category.icon}</span>
-              <h3 className="font-display text-xl text-[#3A2E2A]">{category.title}</h3>
+              <h3 className="font-display text-xl text-slate-900 dark:text-white">{category.title}</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {category.items.map((item) => (
                 <div
                   key={item.name}
-                  className="flex items-center gap-5 rounded-[28px] bg-white px-5 py-4 shadow-[0_2px_12px_rgba(58,46,42,0.06)]"
+                  className="flex items-center gap-5 rounded-[28px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-5 py-4 shadow-[0_2px_12px_rgba(58,46,42,0.06)]"
                 >
-                  <div className="relative h-[92px] w-[92px] shrink-0 overflow-hidden rounded-full border-4 border-[#F8F3EF]">
+                  <div className="relative h-[92px] w-[92px] shrink-0 overflow-hidden rounded-full border-4 border-[#F8F3EF] dark:border-slate-800">
                     <Image
                       src={item.image}
                       alt={item.name}
@@ -318,13 +318,13 @@ export default function FoodMenu() {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-display text-[17px] text-[#3A2E2A] leading-snug">
+                    <h4 className="font-display text-[17px] text-slate-900 dark:text-white leading-snug">
                       {item.name}
                     </h4>
-                    <p className="text-[11px] text-[#9C8E88] leading-snug mt-1 line-clamp-2">
+                    <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug mt-1 line-clamp-2">
                       {item.desc}
                     </p>
-                    <div className="flex items-center gap-4 mt-2 text-[11px] font-medium text-[#3A2E2A]">
+                    <div className="flex items-center gap-4 mt-2 text-[11px] font-medium text-slate-800 dark:text-slate-200">
                       <span className="flex items-center gap-1">
                         Nutrition facts <NutritionIcon />
                       </span>
@@ -336,9 +336,9 @@ export default function FoodMenu() {
                       {item.options.map((opt, i) => (
                         <span key={i} className="flex items-center gap-1.5 text-[12px]">
                           {opt.label && (
-                            <span className="text-[#9C8E88]">{opt.label}</span>
+                            <span className="text-slate-500 dark:text-slate-400">{opt.label}</span>
                           )}
-                          <span className="font-semibold text-[#3A2E2A]">{opt.price}</span>
+                          <span className="font-semibold text-slate-900 dark:text-white">{opt.price}</span>
                           <PriceTagIcon />
                         </span>
                       ))}

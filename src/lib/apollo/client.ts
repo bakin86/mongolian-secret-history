@@ -8,6 +8,10 @@ export function getApolloClient(): ApolloClient {
     instance = new ApolloClient({
       link,
       cache: new InMemoryCache(),
+      defaultOptions: {
+        query: { errorPolicy: "all" },
+        watchQuery: { errorPolicy: "all" },
+      },
     });
   }
   return instance;

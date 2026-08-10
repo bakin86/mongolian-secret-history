@@ -25,7 +25,12 @@ const rows = [
   },
 ];
 
-export default function GalleryClient() {
+interface GalleryClientProps {
+  /** Banner image resolved on the server so it does not swap in after hydration. */
+  heroImage?: string | null;
+}
+
+export default function GalleryClient({ heroImage }: GalleryClientProps) {
   const t = useTranslations("gallery");
   const cms = useCmsPage("gallery");
 
@@ -35,6 +40,7 @@ export default function GalleryClient() {
         label={t("heroLabel")}
         title={cms?.name || t("heroTitle")}
         subtitle={(cms?.description ? stripHtml(cms.description) : "") || t("heroSubtitle")}
+        image={heroImage}
       />
 
       <section className="bg-background py-20 lg:py-[120px] overflow-hidden">

@@ -23,6 +23,7 @@ export default async function TermsPage({ params }: PageProps) {
         label={t("heroLabel")}
         title={cms?.name || t("heroTitle")}
         subtitle={(cms?.description ? stripHtml(cms.description) : "") || t("heroSubtitle")}
+        image={cms?.thumbnail?.url}
       />
       <section className="bg-white py-20 lg:py-[120px]">
         <div className="mx-auto max-w-[900px] px-6 lg:px-0">

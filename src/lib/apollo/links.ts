@@ -1,12 +1,9 @@
 import { ApolloLink, HttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 
+// Routed through a same-origin proxy so the secret app token stays server-side.
 const httpLink = new HttpLink({
-  uri: process.env.NEXT_PUBLIC_ERXES_API_URL,
-  headers: {
-    "erxes-app-token": process.env.NEXT_PUBLIC_ERXES_APP_TOKEN ?? "",
-    "x-app-token": process.env.NEXT_PUBLIC_ERXES_CLIENT_PORTAL_TOKEN ?? "",
-  },
+  uri: "/api/erxes",
 });
 
 const authLink = setContext((_, { headers }) => {

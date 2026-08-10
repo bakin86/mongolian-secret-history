@@ -3,6 +3,8 @@ import WelcomeIntro from "@/components/sections/WelcomeIntro";
 import SplitCardSection from "@/components/sections/SplitCardSection";
 import DoubleImageSection from "@/components/sections/DoubleImageSection";
 import SpaSection from "@/components/sections/SpaSection";
+import HomeBlocks from "@/components/sections/HomeBlocks";
+import { getHomeBlocks } from "@/lib/cms/homeBlocks";
 import { getServerApolloClient } from "@/lib/apollo/server-client";
 import {
   CP_PAGE,
@@ -100,10 +102,11 @@ const defaultHomeContent: HomeContent = {
 };
 
 function mergeHomeContent(raw?: string | null): HomeContent | null {
-  if (!raw) return null;
+  const content = raw?.trim();
+  if (!content || !content.startsWith("{")) return null;
   try {
-    const parsed = JSON.parse(raw) as Partial<HomeContent>;
-    if (!parsed.heroHeading) return null;
+    const parsed = JSON.parse(content) as Partial<HomeContent>;
+    if (!parsed || typeof parsed !== "object" || !parsed.heroHeading) return null;
     return {
       ...defaultHomeContent,
       ...parsed,
@@ -138,7 +141,10 @@ async function getHomeContent(locale: string): Promise<HomeContent> {
 
 export default async function HomePage({ params }: PageProps) {
   const { locale } = await params;
-  const cms = await getHomeContent(locale);
+  const [cms, blocks] = await Promise.all([
+    getHomeContent(locale),
+    getHomeBlocks(locale),
+  ]);
 
   return (
     <>
@@ -156,40 +162,48 @@ export default async function HomePage({ params }: PageProps) {
 
       <WelcomeIntro text={cms.intro} />
 
-      <SplitCardSection
-        title={cms.discover.title}
-        description={cms.discover.description}
-        image={cms.discover.image}
-        imageAlt="Mongolian landscape"
-        href={cms.discover.href}
-        cta={cms.discover.cta}
-      />
+      {/* Sections come from the CMS once they are authored; the hardcoded set
+          below is the fallback for an empty or unreachable CMS. */}
+      {blocks.length > 0 ? (
+        <HomeBlocks blocks={blocks} locale={locale} />
+      ) : (
+        <>
+          <SplitCardSection
+            title={cms.discover.title}
+            description={cms.discover.description}
+            image={cms.discover.image}
+            imageAlt="Mongolian landscape"
+            href={cms.discover.href}
+            cta={cms.discover.cta}
+          />
 
-      <DoubleImageSection
-        title={cms.recreation.title}
-        description={cms.recreation.description}
-        images={cms.recreation.images}
-        href={cms.recreation.href}
-        cta={cms.recreation.cta}
-      />
+          <DoubleImageSection
+            title={cms.recreation.title}
+            description={cms.recreation.description}
+            images={cms.recreation.images}
+            href={cms.recreation.href}
+            cta={cms.recreation.cta}
+          />
 
-      <SpaSection
-        title={cms.wellness.title}
-        description={cms.wellness.description}
-        images={cms.wellness.images}
-        href={cms.wellness.href}
-        cta={cms.wellness.cta}
-      />
+          <SpaSection
+            title={cms.wellness.title}
+            description={cms.wellness.description}
+            images={cms.wellness.images}
+            href={cms.wellness.href}
+            cta={cms.wellness.cta}
+          />
 
-      <SplitCardSection
-        title={cms.tours.title}
-        description={cms.tours.description}
-        image={cms.tours.image}
-        imageAlt="Mongolian tour experience"
-        href={cms.tours.href}
-        cta={cms.tours.cta}
-        reversed
-      />
+          <SplitCardSection
+            title={cms.tours.title}
+            description={cms.tours.description}
+            image={cms.tours.image}
+            imageAlt="Mongolian tour experience"
+            href={cms.tours.href}
+            cta={cms.tours.cta}
+            reversed
+          />
+        </>
+      )}
     </>
   );
 }

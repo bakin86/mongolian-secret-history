@@ -9,6 +9,7 @@ interface TextContent {
   title: string;
   desc1: string;
   desc2: string;
+  image?: string;
 }
 
 interface AboutSectionsProps {
@@ -61,15 +62,17 @@ function TextColumn({ content, order }: { content: TextContent; order?: string }
       >
         {content.desc1}
       </motion.p>
-      <motion.p
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-        className="text-[17px] leading-[1.7] text-muted-foreground"
-      >
-        {content.desc2}
-      </motion.p>
+      {content.desc2 ? (
+        <motion.p
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="text-[17px] leading-[1.7] text-muted-foreground"
+        >
+          {content.desc2}
+        </motion.p>
+      ) : null}
     </motion.div>
   );
 }
@@ -80,7 +83,7 @@ export default function AboutSections({ country, culture }: AboutSectionsProps) 
       <section className="bg-background py-20 lg:py-[120px]">
         <div className="mx-auto max-w-[1200px] px-6 lg:px-0">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <ParallaxImage src="/images/about-nomads.jpg" alt={country.title} />
+            <ParallaxImage src={country.image || "/images/hero-steppe.jpg"} alt={country.title} />
             <TextColumn content={country} />
           </div>
         </div>
@@ -91,7 +94,7 @@ export default function AboutSections({ country, culture }: AboutSectionsProps) 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <TextColumn content={culture} order="order-2 lg:order-1" />
             <div className="order-1 lg:order-2">
-              <ParallaxImage src="/images/culture-nomads.jpg" alt={culture.title} />
+              <ParallaxImage src={culture.image || "/images/culture-naadam.jpg"} alt={culture.title} />
             </div>
           </div>
         </div>

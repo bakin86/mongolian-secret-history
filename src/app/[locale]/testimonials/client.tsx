@@ -53,7 +53,12 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
-export default function TestimonialsClient() {
+interface TestimonialsClientProps {
+  /** Banner image resolved on the server so it does not swap in after hydration. */
+  heroImage?: string | null;
+}
+
+export default function TestimonialsClient({ heroImage }: TestimonialsClientProps) {
   const t = useTranslations("testimonials");
   const cms = useCmsPage("testimonials");
   const items = testimonials;
@@ -64,6 +69,7 @@ export default function TestimonialsClient() {
         label={t("heroLabel")}
         title={cms?.name || t("heroTitle")}
         subtitle={(cms?.description ? stripHtml(cms.description) : "") || t("heroSubtitle")}
+        image={heroImage}
       />
 
       <section className="bg-background py-20 lg:py-[120px]">
@@ -85,18 +91,18 @@ export default function TestimonialsClient() {
               <motion.div
                 key={testimonial.author}
                 variants={item}
-                className="rounded-[20px] bg-white border border-border p-8 flex flex-col gap-4 transition-all hover:shadow-[0_10px_15px_-3px_rgba(18,63,174,0.08)]"
+                className="rounded-[20px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 flex flex-col gap-4 transition-all hover:shadow-[0_10px_15px_-3px_rgba(18,63,174,0.08)]"
               >
-                <blockquote className="font-display text-lg lg:text-xl leading-relaxed text-foreground">
+                <blockquote className="font-display text-lg lg:text-xl leading-relaxed text-slate-900 dark:text-white">
                   &ldquo;{testimonial.quote}&rdquo;
                 </blockquote>
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white text-sm font-medium">
+                  <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white text-sm font-semibold">
                     {testimonial.author.charAt(0)}
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium text-foreground">{testimonial.author}</span>
-                    <span className="text-xs text-muted-foreground">{testimonial.tour}</span>
+                    <span className="text-sm font-semibold text-slate-900 dark:text-white">{testimonial.author}</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">{testimonial.tour}</span>
                   </div>
                 </div>
               </motion.div>
