@@ -7,30 +7,42 @@ import { useTranslations } from "next-intl";
 import { useCmsPage } from "@/lib/hooks/useCmsPage";
 import { stripHtml } from "@/lib/cms/html";
 
-const rows = [
-  {
-    images: ["/images/tour-1.jpg", "/images/tour-2.jpg", "/images/tour-3.jpg"],
-    cardWidth: "w-[260px] md:w-[390px]",
-    cardHeight: "h-[200px] md:h-[260px]",
-  },
-  {
-    images: ["/images/tour-4.jpg", "/images/tour-5.jpg"],
-    cardWidth: "w-[340px] md:w-[590px]",
-    cardHeight: "h-[240px] md:h-[320px]",
-  },
-  {
-    images: ["/images/tour-2.jpg", "/images/tour-3.jpg", "/images/tour-1.jpg"],
-    cardWidth: "w-[260px] md:w-[390px]",
-    cardHeight: "h-[200px] md:h-[260px]",
-  },
+/**
+ * Three bands of differing card sizes give the marquee its rhythm; only the
+ * pictures come from the CMS, so the client cannot flatten the layout.
+ */
+const ROW_STYLES = [
+  { cardWidth: "w-[260px] md:w-[390px]", cardHeight: "h-[200px] md:h-[260px]" },
+  { cardWidth: "w-[340px] md:w-[590px]", cardHeight: "h-[240px] md:h-[320px]" },
+  { cardWidth: "w-[260px] md:w-[390px]", cardHeight: "h-[200px] md:h-[260px]" },
 ];
+
+const FALLBACK_ROWS = [
+  ["/images/tour-1.jpg", "/images/tour-2.jpg", "/images/tour-3.jpg"],
+  ["/images/tour-4.jpg", "/images/tour-5.jpg"],
+  ["/images/tour-2.jpg", "/images/tour-3.jpg", "/images/tour-1.jpg"],
+];
+
+/** Deal the uploads across the three bands so every row keeps scrolling. */
+function toRows(images: string[]): string[][] {
+  if (!images.length) return FALLBACK_ROWS;
+  const rows: string[][] = [[], [], []];
+  images.forEach((image, i) => rows[i % ROW_STYLES.length].push(image));
+  return rows.filter((row) => row.length > 0);
+}
 
 interface GalleryClientProps {
   /** Banner image resolved on the server so it does not swap in after hydration. */
   heroImage?: string | null;
+  images?: string[];
 }
 
-export default function GalleryClient({ heroImage }: GalleryClientProps) {
+export default function GalleryClient({ heroImage, images = [] }: GalleryClientProps) {
+  const rows = toRows(images).map((rowImages, i) => ({
+    images: rowImages,
+    ...ROW_STYLES[i % ROW_STYLES.length],
+  }));
+
   const t = useTranslations("gallery");
   const cms = useCmsPage("gallery");
 

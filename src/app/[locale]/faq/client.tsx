@@ -39,13 +39,15 @@ const faqs = [
 interface FAQClientProps {
   /** Banner image resolved on the server so it does not swap in after hydration. */
   heroImage?: string | null;
+  items?: { question: string; answer: string }[];
 }
 
-export default function FAQClient({ heroImage }: FAQClientProps) {
+export default function FAQClient({ heroImage, items: cmsItems }: FAQClientProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const t = useTranslations("faq");
   const cms = useCmsPage("faq");
-  const items = faqs;
+  // The hardcoded set stays as the fallback for an empty or unreachable CMS.
+  const items = cmsItems?.length ? cmsItems : faqs;
 
   return (
     <InnerPageLayout>

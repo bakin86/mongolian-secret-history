@@ -9,6 +9,10 @@ import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import FAQSection from "@/components/sections/FAQSection";
 import BlogSection from "@/components/sections/BlogSection";
 import { getCmsPage } from "@/lib/cms/page";
+import { getTeamMembers, getGalleryImages } from "@/lib/cms/team";
+import { getFaqItems } from "@/lib/cms/faq";
+import { getBlogTeasers } from "@/lib/cms/posts";
+import { getPricingPlans } from "@/lib/cms/pricing";
 import { stripHtml } from "@/lib/cms/html";
 import type { Metadata } from "next";
 import { getCmsMetadata } from "@/lib/cms/seo";
@@ -17,15 +21,44 @@ interface PageProps {
   params: Promise<{ locale: string }>;
 }
 
+const FALLBACK_GALLERY = [
+  "/images/tour-1.jpg",
+  "/images/tour-2.jpg",
+  "/images/tour-3.jpg",
+  "/images/tour-4.jpg",
+  "/images/tour-5.jpg",
+  "/images/tour-6.jpg",
+  "/images/hero-steppe.jpg",
+  "/images/about-nomads.jpg",
+];
+
 export default async function PlanYourTripPage({ params }: PageProps) {
   const { locale } = await params;
-  const cms = await getCmsPage(locale, "plan-your-trip");
+  const [cms, team, galleryImages, faqItems, blogPosts, pricingPlans] =
+    await Promise.all([
+      getCmsPage(locale, "plan-your-trip"),
+      getTeamMembers(locale),
+      getGalleryImages(locale),
+      getFaqItems(locale),
+      getBlogTeasers(locale, 3),
+      getPricingPlans(locale),
+    ]);
+
+  // The marquee reads as two counter-scrolling rows, so split whatever the
+  // client uploaded down the middle rather than fixing the count.
+  const images = galleryImages.length ? galleryImages : FALLBACK_GALLERY;
+  const half = Math.ceil(images.length / 2);
+  const galleryRows = [images.slice(0, half), images.slice(half)].filter(
+    (row) => row.length > 0
+  );
+
   return (
     <InnerPageLayout>
       <PageHero
         label="Plan your trip"
         title={cms?.name || "Plan Your Trip"}
         subtitle={(cms?.description ? stripHtml(cms.description) : "") || "Design your perfect Mongolia journey with our team"}
+        image={cms?.thumbnail?.url}
       />
 
       {cms?.content && (
@@ -37,8 +70,8 @@ export default async function PlanYourTripPage({ params }: PageProps) {
       )}
 
       <BuildYourTourSection />
-      <PricingSection />
-      <TeamCarousel />
+      <PricingSection plans={pricingPlans} />
+      <TeamCarousel members={team} />
 
       <section className="bg-background py-20 lg:py-[100px] overflow-hidden">
         <div className="text-center mb-12">
@@ -47,24 +80,17 @@ export default async function PlanYourTripPage({ params }: PageProps) {
           <h2 className="font-display text-3xl md:text-[44px] leading-[1.15] mt-3">Moments from Mongolia</h2>
         </div>
         <GalleryMarquee
-          rows={[
-            {
-              images: ["/images/tour-1.jpg", "/images/tour-2.jpg", "/images/tour-3.jpg", "/images/tour-4.jpg"],
-              cardWidth: "w-[320px] md:w-[400px]",
-              cardHeight: "h-[200px] md:h-[240px]",
-            },
-            {
-              images: ["/images/tour-5.jpg", "/images/tour-6.jpg", "/images/hero-steppe.jpg", "/images/about-nomads.jpg"],
-              cardWidth: "w-[320px] md:w-[400px]",
-              cardHeight: "h-[200px] md:h-[240px]",
-            },
-          ]}
+          rows={galleryRows.map((rowImages) => ({
+            images: rowImages,
+            cardWidth: "w-[320px] md:w-[400px]",
+            cardHeight: "h-[200px] md:h-[240px]",
+          }))}
         />
       </section>
 
-      <TestimonialsSection />
-      <FAQSection />
-      <BlogSection />
+      <TestimonialsSection guide={team[0]} />
+      <FAQSection items={faqItems} />
+      <BlogSection posts={blogPosts.length ? blogPosts : undefined} />
     </InnerPageLayout>
   );
 }

@@ -5,7 +5,17 @@ import { motion } from "framer-motion";
 import Image from "@/components/common/Image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const team = [
+export interface TeamMemberCard {
+  name: string;
+  role: string;
+  bio: string;
+  image?: string;
+}
+
+const FALLBACK_PORTRAIT = "/images/tour-6.jpg";
+
+// Fallback roster for an empty or unreachable CMS.
+const defaultTeam: TeamMemberCard[] = [
   {
     name: "Boldbaatar",
     role: "Founder & Lead Guide",
@@ -28,16 +38,21 @@ const team = [
   },
 ];
 
-export default function TeamCarousel() {
+export default function TeamCarousel({
+  members,
+}: {
+  members?: TeamMemberCard[];
+}) {
+  const team = members?.length ? members : defaultTeam;
   const [active, setActive] = useState(0);
 
   const next = useCallback(() => {
     setActive((prev) => (prev + 1) % team.length);
-  }, []);
+  }, [team.length]);
 
   const prev = useCallback(() => {
     setActive((current) => (current - 1 + team.length) % team.length);
-  }, []);
+  }, [team.length]);
 
   useEffect(() => {
     const timer = setInterval(next, 5000);
@@ -75,7 +90,7 @@ export default function TeamCarousel() {
               >
                 <div className="relative h-[180px] w-[180px] md:h-[220px] md:w-[220px] shrink-0 overflow-hidden rounded-[24px] border border-slate-200 dark:border-slate-800">
                   <Image
-                    src="/images/tour-6.jpg"
+                    src={member.image || FALLBACK_PORTRAIT}
                     alt={member.name}
                     fill
                     className="object-cover"
@@ -88,11 +103,6 @@ export default function TeamCarousel() {
                 <p className="mt-3 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                   {member.bio}
                 </p>
-                {isActive && (
-                  <button className="mt-5 rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-dark">
-                    Meet {member.name.split(" ")[0]}
-                  </button>
-                )}
               </div>
             </motion.div>
           );

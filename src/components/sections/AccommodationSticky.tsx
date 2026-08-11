@@ -36,16 +36,17 @@ function Slide({
   const start = i * step;
   const end = start + step;
 
-  const y = useTransform(progress, [start, end], ["100%", "0%"]);
-  const opacity = useTransform(
-    progress,
-    [start, Math.min(start + step * 0.4, end)],
-    [i === 0 ? 1 : 0, 1]
-  );
+  // Each image wipes up over the one before it and stays fully opaque
+  // throughout. Cross-fading them looked like a double exposure: the outgoing
+  // image never faded out, so both were visible for the whole transition — and
+  // stopping mid-scroll froze the blend.
+  const settled = Math.min(start + step * 0.5, end);
+  const y = useTransform(progress, [start, settled], ["100%", "0%"]);
 
   return (
     <motion.div
-      style={i === 0 ? { opacity } : { y, opacity }}
+      // The first image is the backdrop the rest slide over.
+      style={i === 0 ? undefined : { y }}
       className="absolute inset-0 overflow-hidden rounded-2xl"
     >
       <Image src={image} alt="" fill className="object-cover" />

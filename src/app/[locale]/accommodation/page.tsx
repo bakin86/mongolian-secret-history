@@ -3,6 +3,7 @@ import InnerPageLayout from "@/components/layout/InnerPageLayout";
 import PageHero from "@/components/sections/PageHero";
 import AccommodationSticky from "@/components/sections/AccommodationSticky";
 import { getCmsPage } from "@/lib/cms/page";
+import { getAccommodations } from "@/lib/cms/accommodation";
 import { stripHtml } from "@/lib/cms/html";
 import type { Metadata } from "next";
 import { getCmsMetadata } from "@/lib/cms/seo";
@@ -57,8 +58,14 @@ const accommodations = [
 
 export default async function AccommodationPage({ params }: PageProps) {
   const { locale } = await params;
-  const cms = await getCmsPage(locale, "accommodation");
-  const t = await getTranslations("accommodation");
+  const [cms, stays, t] = await Promise.all([
+    getCmsPage(locale, "accommodation"),
+    getAccommodations(locale),
+    getTranslations("accommodation"),
+  ]);
+
+  // The hardcoded list stays as the fallback for an empty or unreachable CMS.
+  const items = stays.length ? stays : accommodations;
 
   return (
     <InnerPageLayout>
@@ -69,7 +76,7 @@ export default async function AccommodationPage({ params }: PageProps) {
         image={cms?.thumbnail?.url}
       />
 
-      <AccommodationSticky items={accommodations} locale={locale} />
+      <AccommodationSticky items={items} locale={locale} />
     </InnerPageLayout>
   );
 }

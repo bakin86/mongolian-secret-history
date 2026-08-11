@@ -6,6 +6,7 @@ import Image from "@/components/common/Image";
 import Link from "next/link";
 
 import ExpandableSection from "@/components/accommodation/ExpandableSection";
+import { getAccommodation, getAccommodations } from "@/lib/cms/accommodation";
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -224,19 +225,31 @@ const details: Record<
 };
 
 export async function generateStaticParams() {
-  return [
-    { locale: "en", slug: "mongolian-secret-history-camp" },
-    { locale: "mn", slug: "mongolian-secret-history-camp" },
-    { locale: "en", slug: "secret-of-the-silk-road" },
-    { locale: "mn", slug: "secret-of-the-silk-road" },
-    { locale: "en", slug: "secret-of-ongi" },
-    { locale: "mn", slug: "secret-of-ongi" },
-  ];
+  const fallbackSlugs = Object.keys(details);
+  const cmsSlugs = (await getAccommodations("en")).map((entry) => entry.slug);
+  const slugs = [...new Set([...fallbackSlugs, ...cmsSlugs])];
+
+  return slugs.flatMap((slug) => [
+    { locale: "en", slug },
+    { locale: "mn", slug },
+  ]);
 }
 
 export default async function AccommodationDetailPage({ params }: PageProps) {
   const { locale, slug } = await params;
-  const data = details[slug];
+
+  // CMS wins; the hardcoded entries remain for stays not yet authored there.
+  const cms = await getAccommodation(locale, slug);
+  const data = cms
+    ? {
+        title: cms.name,
+        subtitle: cms.subtitle,
+        image: cms.image,
+        intro: cms.intro,
+        sections: cms.sections,
+      }
+    : details[slug];
+
   if (!data) return notFound();
 
   const t = await getTranslations("accommodation");

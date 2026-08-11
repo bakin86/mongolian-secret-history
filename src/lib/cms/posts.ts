@@ -2,6 +2,12 @@ import { getServerApolloClient } from "@/lib/apollo/server-client";
 import { CP_POSTS } from "@/graphql/cms/queries/post";
 import type { CpPostsData, CpPostsVariables, Post } from "@/graphql/cms/queries/post";
 import { HOME_BLOCK_POST_TYPE } from "@/lib/cms/homeBlocks";
+import { ACCOMMODATION_POST_TYPE } from "@/lib/cms/accommodation";
+import { TEAM_POST_TYPE } from "@/lib/cms/team";
+import { FAQ_POST_TYPE } from "@/lib/cms/faq";
+import { PRICING_POST_TYPE } from "@/lib/cms/pricing";
+import { TESTIMONIALS_POST_TYPE } from "@/lib/cms/testimonials";
+import { stripHtml } from "@/lib/cms/html";
 
 const fallbackPosts: Post[] = [
   {
@@ -33,45 +39,107 @@ const fallbackPosts: Post[] = [
   },
 ];
 
+/**
+ * Post types that drive their own part of the site and must never surface as
+ * blog articles.
+ *
+ * This is an exclusion list, which is the wrong shape: any custom post type
+ * added in erxes leaks into the blog until it is named here — it has already
+ * happened twice. Replace this with the blog type's own key as soon as it is
+ * known, and the whole problem goes away.
+ */
+const NON_BLOG_POST_TYPE_KEYS = [
+  HOME_BLOCK_POST_TYPE,
+  ACCOMMODATION_POST_TYPE,
+  TEAM_POST_TYPE,
+  FAQ_POST_TYPE,
+  PRICING_POST_TYPE,
+  TESTIMONIALS_POST_TYPE,
+  "Testimonial",
+  "Testimonials",
+  "atR2mh9lgHVtsKUv1p30_",
+];
+
+/** Tours predate the keyed types and are only known by id. */
+const TOUR_POST_TYPE_IDS = ["USl4jFjiPIkPDcZz5uQEK", "tour", "tours"];
+
 export async function getCmsPosts(locale: string, limit = 100) {
   try {
     const client = await getServerApolloClient();
     const { CP_POST_LIST } = await import("@/graphql/cms/queries/post");
 
-    // The blog list is an exclusion list, so every new custom post type shows up
-    // here until it is named. Home page sections are resolved by their type key
-    // rather than a hardcoded id, which the API only ever returns opaque.
-    const [all, homeBlocks] = await Promise.all([
+    const fetchList = (variables: Record<string, unknown>) =>
       client.query<{ cpPostList?: { posts: Post[] } }>({
         query: CP_POST_LIST,
-        variables: { language: locale, limit },
+        variables: { language: locale, ...variables },
         context: { fetchOptions: { next: { revalidate: 0 } } },
-      }),
-      client.query<{ cpPostList?: { posts: Post[] } }>({
-        query: CP_POST_LIST,
-        variables: { language: locale, type: HOME_BLOCK_POST_TYPE, limit: 100 },
-        context: { fetchOptions: { next: { revalidate: 0 } } },
-      }),
+      });
+
+    // Resolve each type by key: a post's `type` is an opaque id the API never
+    // accepts back as a filter, so the ids cannot be hardcoded.
+    const [all, ...excluded] = await Promise.all([
+      fetchList({ limit }),
+      ...NON_BLOG_POST_TYPE_KEYS.map((type) => fetchList({ type, limit: 100 })),
     ]);
 
-    const allPosts: Post[] = (all.data?.cpPostList?.posts ?? []) as Post[];
-    const homeBlockTypes = new Set(
-      (homeBlocks.data?.cpPostList?.posts ?? [])
-        .map((p) => p.type)
+    const excludedTypeIds = new Set(
+      excluded
+        .flatMap((result) => result.data?.cpPostList?.posts ?? [])
+        .map((post) => post.type)
         .filter((type): type is string => Boolean(type))
     );
 
+    const allPosts: Post[] = (all.data?.cpPostList?.posts ?? []) as Post[];
     return allPosts.filter(
       (p) =>
-        p.type !== "USl4jFjiPIkPDcZz5uQEK" &&
-        p.type !== "tour" &&
-        p.type !== "tours" &&
-        !(p.type && homeBlockTypes.has(p.type))
+        !TOUR_POST_TYPE_IDS.includes(p.type ?? "") &&
+        !(p.type && excludedTypeIds.has(p.type))
     );
   } catch (error) {
     console.warn("CMS posts query error:", error instanceof Error ? error.message : String(error));
     return [];
   }
+}
+
+export type BlogTeaser = {
+  title: string;
+  date: string;
+  excerpt: string;
+  slug?: string;
+  image?: string;
+};
+
+function formatDate(dateString?: string, locale = "en") {
+  if (!dateString) return "";
+  return new Date(dateString).toLocaleDateString(
+    locale === "mn" ? "mn-MN" : "en-US",
+    { year: "numeric", month: "long", day: "numeric" }
+  );
+}
+
+/** Newest blog articles, shaped for the teaser grid on other pages. */
+export async function getBlogTeasers(
+  locale: string,
+  limit = 3
+): Promise<BlogTeaser[]> {
+  const posts = await getCmsPosts(locale, 100);
+
+  return posts
+    .slice()
+    .sort((a, b) =>
+      (b.publishedDate ?? b.createdAt ?? "").localeCompare(
+        a.publishedDate ?? a.createdAt ?? ""
+      )
+    )
+    .slice(0, limit)
+    .map((post) => ({
+      title: post.title?.trim() ?? "",
+      date: formatDate(post.publishedDate ?? post.createdAt, locale),
+      excerpt: stripHtml(post.excerpt || post.content || "").slice(0, 160),
+      slug: post.slug,
+      image: post.thumbnail?.url ?? post.images?.[0]?.url,
+    }))
+    .filter((post) => post.title);
 }
 
 export async function getAboutMongoliaPosts(locale: string) {

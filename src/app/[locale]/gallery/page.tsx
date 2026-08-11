@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getCmsMetadata } from "@/lib/cms/seo";
 import { getCmsPage } from "@/lib/cms/page";
+import { getGalleryImages } from "@/lib/cms/team";
 import GalleryClient from "./client";
 
 interface PageProps {
@@ -19,6 +20,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function GalleryPage({ params }: PageProps) {
   const { locale } = await params;
-  const cms = await getCmsPage(locale, "gallery");
-  return <GalleryClient heroImage={cms?.thumbnail?.url} />;
+  const [cms, images] = await Promise.all([
+    getCmsPage(locale, "gallery"),
+    getGalleryImages(locale),
+  ]);
+  return <GalleryClient heroImage={cms?.thumbnail?.url} images={images} />;
 }

@@ -12,8 +12,12 @@ export interface BlogSectionPost {
   date: string;
   excerpt: string;
   slug?: string;
+  image?: string;
 }
 
+const FALLBACK_COVER = "/images/tour-2.jpg";
+
+// Fallback teasers for an empty or unreachable CMS.
 const defaultPosts: BlogSectionPost[] = [
   { title: "10 Reasons to Visit Mongolia This Summer", date: "June 15, 2026", excerpt: "Discover why summer is the perfect season to explore Mongolia." },
   { title: "A Guide to Mongolian Nomadic Culture", date: "May 28, 2026", excerpt: "Learn about ger life, hospitality, and timeless traditions." },
@@ -67,7 +71,7 @@ export default function BlogSection({ posts = defaultPosts }: { posts?: BlogSect
             >
               <div className="relative h-[220px] w-full overflow-hidden">
                 <Image
-                  src="/images/tour-2.jpg"
+                  src={post.image || FALLBACK_COVER}
                   alt={post.title}
                   fill
                   className="object-cover transition-transform duration-700 hover:scale-105"

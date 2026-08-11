@@ -8,7 +8,13 @@ import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 
-const faqs = [
+export interface FaqEntry {
+  question: string;
+  answer: string;
+}
+
+// Fallback set for an empty or unreachable CMS.
+const defaultFaqs: FaqEntry[] = [
   {
     question: "What is the best time to visit Mongolia?",
     answer: "The best time to visit Mongolia is from June to September when the weather is mild and most festivals take place. Summer offers green landscapes and the famous Naadam Festival.",
@@ -31,10 +37,18 @@ const faqs = [
   },
 ];
 
-export default function FAQSection() {
+export default function FAQSection({
+  items,
+  limit = 5,
+}: {
+  items?: FaqEntry[];
+  /** The page only teases a few questions; the rest live on /faq. */
+  limit?: number;
+}) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const t = useTranslations("home");
   const locale = useLocale();
+  const faqs = (items?.length ? items : defaultFaqs).slice(0, limit);
 
   return (
     <section className="bg-white py-20 lg:py-[140px]">

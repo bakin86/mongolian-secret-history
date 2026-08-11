@@ -6,8 +6,9 @@ import PageHero from "@/components/sections/PageHero";
 import { useTranslations } from "next-intl";
 import { useCmsPage } from "@/lib/hooks/useCmsPage";
 import { stripHtml } from "@/lib/cms/html";
+import { type TestimonialItem } from "@/lib/cms/testimonials";
 
-const testimonials = [
+const fallbackTestimonials: TestimonialItem[] = [
   {
     quote: "Of all the awesome new friends we made on our trip, the guides were the best. We plan to return in a few years and head East.",
     author: "Sarah & Tom, USA",
@@ -56,12 +57,16 @@ const item = {
 interface TestimonialsClientProps {
   /** Banner image resolved on the server so it does not swap in after hydration. */
   heroImage?: string | null;
+  cmsTestimonials?: TestimonialItem[];
 }
 
-export default function TestimonialsClient({ heroImage }: TestimonialsClientProps) {
+export default function TestimonialsClient({
+  heroImage,
+  cmsTestimonials,
+}: TestimonialsClientProps) {
   const t = useTranslations("testimonials");
   const cms = useCmsPage("testimonials");
-  const items = testimonials;
+  const items = cmsTestimonials?.length ? cmsTestimonials : fallbackTestimonials;
 
   return (
     <InnerPageLayout>

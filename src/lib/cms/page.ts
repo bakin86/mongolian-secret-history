@@ -8,7 +8,9 @@ export async function getCmsPage(locale: string, slug: string) {
     const { data } = await client.query<CpPageData, CpPageVariables>({
       query: CP_PAGE,
       variables: { slug, language: locale },
-      context: { fetchOptions: { next: { revalidate: 60 } } },
+      // Uncached like the other CMS reads, so an edit in erxes shows up on the
+      // next request instead of up to a minute later.
+      context: { fetchOptions: { next: { revalidate: 0 } } },
     });
     return data?.cpCmsPageDetail ?? null;
   } catch (error) {

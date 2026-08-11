@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Check } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { getCmsPage } from "@/lib/cms/page";
+import { getPricingPlans } from "@/lib/cms/pricing";
 import { stripHtml } from "@/lib/cms/html";
 import type { Metadata } from "next";
 import { getCmsMetadata } from "@/lib/cms/seo";
@@ -13,7 +14,8 @@ interface PageProps {
   params: Promise<{ locale: string }>;
 }
 
-const plans = [
+// Fallback tiers for an empty or unreachable CMS.
+const defaultPlans = [
   {
     duration: "2–5 days",
     price: "$700–$900",
@@ -39,8 +41,12 @@ const plans = [
 
 export default async function PricingPage({ params }: PageProps) {
   const { locale } = await params;
-  const cms = await getCmsPage(locale, "pricing");
-  const t = await getTranslations("pricing");
+  const [cms, cmsPlans, t] = await Promise.all([
+    getCmsPage(locale, "pricing"),
+    getPricingPlans(locale),
+    getTranslations("pricing"),
+  ]);
+  const plans = cmsPlans.length ? cmsPlans : defaultPlans;
 
   return (
     <InnerPageLayout>

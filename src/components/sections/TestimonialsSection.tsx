@@ -14,7 +14,26 @@ const float = {
   transition: { duration: 0.6, ease: "easeOut" as const },
 };
 
-export default function TestimonialsSection() {
+export interface FeaturedGuide {
+  name: string;
+  role: string;
+  image?: string;
+}
+
+// Shown when the CMS has no team members yet.
+const defaultGuide: FeaturedGuide = {
+  name: "Boldbaatar",
+  role: "Founder & Lead Guide",
+};
+
+const FALLBACK_PORTRAIT = "/images/tour-6.jpg";
+
+export default function TestimonialsSection({
+  guide = defaultGuide,
+}: {
+  /** Lead guide shown in the phone mockup — the first CMS team member. */
+  guide?: FeaturedGuide;
+}) {
   const t = useTranslations("home");
   const locale = useLocale();
 
@@ -102,28 +121,22 @@ export default function TestimonialsSection() {
             <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-5">
               <div className="rounded-[24px] bg-primary-dark p-4">
                 <div className="relative aspect-square w-full overflow-hidden rounded-[20px]">
-                  <Image src="/images/tour-6.jpg" alt="Featured guide" fill className="object-cover" />
+                  <Image
+                    src={guide.image || FALLBACK_PORTRAIT}
+                    alt={guide.name}
+                    fill
+                    className="object-cover"
+                  />
                 </div>
                 <div className="mt-4 text-white">
-                  <h3 className="font-display text-lg text-white">Boldbaatar</h3>
-                  <span className="text-xs uppercase tracking-wider text-white/60">Founder & Lead Guide</span>
+                  <h3 className="font-display text-lg text-white">{guide.name}</h3>
+                  <span className="text-xs uppercase tracking-wider text-white/60">{guide.role}</span>
                 </div>
               </div>
 
               <div className="rounded-[24px] bg-white dark:bg-slate-800 p-6">
                 <h3 className="font-display text-xl text-slate-900 dark:text-white">Dr. James McKelvie</h3>
                 <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Specialist in Advanced Mongolia Expeditions</p>
-                <div className="mt-5 flex items-center gap-2">
-                  <Link
-                    href={`/${locale}/book-online`}
-                    className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-white transition-transform hover:scale-105"
-                  >
-                    Book Now
-                  </Link>
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 dark:border-slate-700">
-                    <span className="h-2 w-2 rounded-full bg-primary" />
-                  </span>
-                </div>
               </div>
             </div>
           </motion.div>
