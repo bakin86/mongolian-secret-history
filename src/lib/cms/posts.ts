@@ -90,11 +90,27 @@ export async function getCmsPosts(locale: string, limit = 100) {
     );
 
     const allPosts: Post[] = (all.data?.cpPostList?.posts ?? []) as Post[];
-    return allPosts.filter(
-      (p) =>
-        !TOUR_POST_TYPE_IDS.includes(p.type ?? "") &&
-        !(p.type && excludedTypeIds.has(p.type))
-    );
+    const NON_BLOG_GROUP_KEYS = [
+      "testimonial",
+      "testimonials",
+      "team",
+      "faq",
+      "pricing",
+      "stay_list",
+      "stay_detail",
+      "home_block",
+    ];
+
+    return allPosts.filter((p) => {
+      if (p.type && TOUR_POST_TYPE_IDS.includes(p.type)) return false;
+      if (p.type && excludedTypeIds.has(p.type)) return false;
+      if (p.type === "atR2mh9lgHVtsKUv1p30_") return false;
+
+      const mapKeys = Object.keys(p.customFieldsMap ?? {});
+      if (mapKeys.some((key) => NON_BLOG_GROUP_KEYS.includes(key))) return false;
+
+      return true;
+    });
   } catch (error) {
     console.warn("CMS posts query error:", error instanceof Error ? error.message : String(error));
     return [];
